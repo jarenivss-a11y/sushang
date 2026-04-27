@@ -1,0 +1,28 @@
+name: codemaster
+description: "小白编程入门助手 - 零基础软件开发自学App"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  # 状态管理 - 让我们能方便地管理应用数据
+  provider: ^6.1.2
+  # 本地存储 - 保存学习进度、设置等数据
+  shared_preferences: ^2.3.3
+  # 路径处理 - 读写文件用
+  path_provider: ^2.1.4
+  # 图片选择 - 选择截图或拍照
+  image_picker: ^1.1.2
+  # 复制到剪贴板
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
