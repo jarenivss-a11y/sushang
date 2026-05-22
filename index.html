@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code Skills - 技能库</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --paper: #faf6f0;
+            --ink: #2d2a26;
+            --ink-light: #5c574e;
+            --pencil: #8b7355;
+            --highlight: #fff3b0;
+            --accent-blue: #5b8dd9;
+            --accent-pink: #e8a4b8;
+            --accent-green: #7cb386;
+            --accent-orange: #e8a862;
+            --accent-purple: #9b8ec4;
+            --border: #d4cdc4;
+        }
+
+        body {
+            font-family: 'Nunito', -apple-system, sans-serif;
+            background: var(--paper);
+            color: var(--ink);
+            min-height: 100vh;
+            background-image:
+                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h100v100H0z' fill='none'/%3E%3Cpath d='M50 50m-1 0a1 1 0 1 0 2 0a1 1 0 1 0-2 0' fill='%23d4cdc4'/%3E%3C/svg%3E");
+            background-size: 20px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* Hand-drawn border effect */
+        .hand-border {
+            position: relative;
+        }
+        .hand-border::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            background: var(--ink);
+            border-radius: inherit;
+            z-index: -1;
+            transform: translate(2px, 2px);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 48px;
+            position: relative;
+        }
+
+        .header-decoration {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 30px;
+        }
+
+        h1 {
+            font-family: 'Caveat', cursive;
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--ink);
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: var(--highlight);
+            z-index: -1;
+            transform: skewX(-3deg);
+        }
+
+        .subtitle {
+            font-family: 'Caveat', cursive;
+            font-size: 1.5rem;
+            color: var(--ink-light);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            margin-top: 24px;
+        }
+
+        .stat {
+            text-align: center;
+            background: white;
+            padding: 16px 28px;
+            border-radius: 16px;
+            border: 2px solid var(--ink);
+            box-shadow: 4px 4px 0 var(--ink);
+            position: relative;
+        }
+
+        .stat::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            right: -4px;
+            bottom: -4px;
+            background: var(--accent-orange);
+            border-radius: 16px;
+            z-index: -1;
+        }
+
+        .stat-value {
+            font-family: 'Caveat', cursive;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--ink-light);
+        }
+
+        .search-bar {
+            max-width: 500px;
+            margin: 0 auto 32px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 16px 24px;
+            border-radius: 30px;
+            border: 2px solid var(--ink);
+            background: white;
+            color: var(--ink);
+            font-size: 1rem;
+            font-family: 'Nunito', sans-serif;
+            outline: none;
+            box-shadow: 4px 4px 0 var(--ink);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .search-bar input:focus {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 var(--ink);
+        }
+
+        .search-bar input::placeholder {
+            color: var(--pencil);
+            font-style: italic;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 2px solid var(--ink);
+            background: white;
+            color: var(--ink);
+            font-size: 0.9rem;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 3px 3px 0 var(--ink);
+        }
+
+        .filter-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 var(--ink);
+        }
+
+        .filter-btn.active {
+            background: var(--ink);
+            color: white;
+            box-shadow: 3px 3px 0 var(--pencil);
+        }
+
+        .category-section {
+            margin-bottom: 48px;
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 3px dashed var(--border);
+        }
+
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            border: 3px solid var(--ink);
+            background: white;
+            box-shadow: 4px 4px 0 var(--ink);
+        }
+
+        .category-title {
+            font-family: 'Caveat', cursive;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .category-count {
+            background: var(--highlight);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: 2px solid var(--ink);
+            margin-left: auto;
+        }
+
+        .skill-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .skill-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            border: 2px solid var(--ink);
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 4px 4px 0 var(--ink);
+            position: relative;
+        }
+
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 20px;
+            height: 20px;
+            background: var(--accent-pink);
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+
+        .skill-card:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 8px 8px 0 var(--ink);
+        }
+
+        .skill-card:hover::before {
+            animation: bounce 0.5s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .skill-name {
+            font-family: 'Caveat', cursive;
+            font-weight: 600;
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+            color: var(--ink);
+        }
+
+        .skill-desc {
+            font-size: 0.9rem;
+            color: var(--ink-light);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .skill-tags {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .skill-tag {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            background: var(--highlight);
+            color: var(--ink);
+            border: 1px solid var(--pencil);
+            font-weight: 500;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(45, 42, 38, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--paper);
+            border-radius: 24px;
+            max-width: 700px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: 3px solid var(--ink);
+            box-shadow: 8px 8px 0 var(--ink);
+        }
+
+        .modal-header {
+            padding: 28px;
+            border-bottom: 2px dashed var(--border);
+            position: relative;
+            background: white;
+        }
+
+        .modal-title {
+            font-family: 'Caveat', cursive;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .modal-category-badge {
+            display: inline-block;
+            background: var(--accent-green);
+            color: white;
+            padding: 4px 16px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 2px solid var(--ink);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--accent-pink);
+            border: 2px solid var(--ink);
+            color: var(--ink);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            font-family: 'Caveat', cursive;
+            box-shadow: 3px 3px 0 var(--ink);
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 var(--ink);
+        }
+
+        .modal-body {
+            padding: 28px;
+        }
+
+        .modal-section {
+            margin-bottom: 24px;
+        }
+
+        .modal-section h3 {
+            font-family: 'Caveat', cursive;
+            font-size: 1.5rem;
+            color: var(--ink);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-section h3::before {
+            content: '✏️';
+            font-size: 1.2rem;
+        }
+
+        .skill-full-desc {
+            line-height: 1.7;
+            color: var(--ink);
+            font-size: 1.05rem;
+        }
+
+        .skill-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+        }
+
+        .meta-item {
+            background: white;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 2px solid var(--ink);
+            box-shadow: 3px 3px 0 var(--ink);
+        }
+
+        .meta-label {
+            font-size: 0.75rem;
+            color: var(--pencil);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-value {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .modal-footer {
+            padding: 20px 28px;
+            background: var(--highlight);
+            border-top: 2px dashed var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-note {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            font-style: italic;
+        }
+
+        .footer-link {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--ink-light);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+
+        /* Hand-drawn underlines for links */
+        .hand-link {
+            position: relative;
+            text-decoration: none;
+        }
+        .hand-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent-orange);
+            transform: skewX(-5deg);
+        }
+
+        /* Decorations */
+        .decoration {
+            position: fixed;
+            font-size: 2rem;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+        .dec-1 { top: 10%; left: 5%; transform: rotate(-15deg); }
+        .dec-2 { top: 30%; right: 5%; transform: rotate(10deg); }
+        .dec-3 { bottom: 20%; left: 8%; transform: rotate(-5deg); }
+        .dec-4 { bottom: 10%; right: 10%; transform: rotate(15deg); }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.8rem; }
+            .stats { gap: 16px; flex-wrap: wrap; }
+            .stat { padding: 12px 20px; }
+            .stat-value { font-size: 2rem; }
+            .category-title { font-size: 1.6rem; }
+            .category-icon { width: 50px; height: 50px; font-size: 1.5rem; }
+            .filters { gap: 8px; }
+            .filter-btn { padding: 8px 16px; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Decorations -->
+    <div class="decoration dec-1">📦</div>
+    <div class="decoration dec-2">🎨</div>
+    <div class="decoration dec-3">🔧</div>
+    <div class="decoration dec-4">✨</div>
+
+    <div class="container">
+        <header>
+            <svg class="header-decoration" viewBox="0 0 200 30">
+                <path d="M10 20 Q50 5 100 15 T190 20" stroke="#e8a862" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <circle cx="30" cy="15" r="4" fill="#e8a4b8"/>
+                <circle cx="100" cy="12" r="3" fill="#7cb386"/>
+                <circle cx="170" cy="18" r="5" fill="#5b8dd9"/>
+            </svg>
+            <h1>Claude Code Skills</h1>
+            <p class="subtitle">～ 你的 AI 技能百宝箱 ～</p>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value" id="totalCount">44</div>
+                    <div class="stat-label">总 Skills</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">6</div>
+                    <div class="stat-label">分类</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">1</div>
+                    <div class="stat-label">思维模型</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="搜索你想要的技能... ✏️">
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">📋 全部</button>
+            <button class="filter-btn" data-filter="飞书系列">📦 飞书系列</button>
+            <button class="filter-btn" data-filter="产品设计">🎨 产品设计</button>
+            <button class="filter-btn" data-filter="开发工具">🔧 开发工具</button>
+            <button class="filter-btn" data-filter="AI媒体">✨ AI媒体</button>
+            <button class="filter-btn" data-filter="AI思维模型">🧠 AI思维模型</button>
+            <button class="filter-btn" data-filter="其他">📚 其他</button>
+        </div>
+
+        <div id="skillsContainer"></div>
+
+        <footer>
+            <p>🎨 Skills 仓库 · <a href="https://github.com/jarenivss-a11y/sushang/tree/skills-repo" target="_blank">GitHub</a></p>
+        </footer>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeModal()">×</button>
+                <div class="modal-title" id="modalTitle"></div>
+                <div class="modal-category-badge" id="modalCategory"></div>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer">
+                <div class="footer-note">📁 存储在 ~/.claude/skills-repo/</div>
+                <a href="https://github.com/jarenivss-a11y/sushang/tree/skills-repo" target="_blank" class="footer-link hand-link">查看 GitHub →</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const skills = {
+            "飞书系列": {
+                icon: "📦",
+                items: [
+                    { name: "lark-approval", desc: "飞书审批 API：审批实例、审批任务管理", version: "1.0.0" },
+                    { name: "lark-attendance", desc: "飞书考勤打卡：查询自己的考勤打卡记录", version: "1.0.0" },
+                    { name: "lark-base", desc: "飞书多维表格：搜索 Base、建表、字段管理、记录读写等", version: "1.2.0" },
+                    { name: "lark-calendar", desc: "飞书日历：查看/搜索日程、创建/更新日程、管理参会人", version: "1.0.0" },
+                    { name: "lark-contact", desc: "飞书通讯录：按姓名/邮箱解析员工为 open_id", version: "1.0.0" },
+                    { name: "lark-doc", desc: "飞书云文档：创建和编辑飞书文档，支持 Markdown", version: "2.0.0" },
+                    { name: "lark-drive", desc: "飞书云空间：管理文件和文件夹，上传下载", version: "1.0.0" },
+                    { name: "lark-event", desc: "飞书实时事件：流式消费事件，支持 IM 消息、 reactions 等", version: "1.0.0" },
+                    { name: "lark-im", desc: "飞书即时通讯：收发消息、管理群聊、搜索记录", version: "1.0.0" },
+                    { name: "lark-mail", desc: "飞书邮箱：起草、发送、回复、搜索邮件", version: "1.0.0" },
+                    { name: "lark-markdown", desc: "飞书 Markdown：查看、创建、上传和编辑 Markdown 文件", version: "1.0.0" },
+                    { name: "lark-minutes", desc: "飞书妙记：查询妙记、下载音视频、获取 AI 产物", version: "1.0.0" },
+                    { name: "lark-okr", desc: "飞书 OKR：管理目标与关键结果，查看对齐关系", version: "1.0.0" },
+                    { name: "lark-openapi-explorer", desc: "飞书 OpenAPI 探索：从官方文档库挖掘原生 API", version: "1.0.0" },
+                    { name: "lark-shared", desc: "飞书共享基础：应用配置初始化、认证登录、权限管理", version: "1.0.0" },
+                    { name: "lark-sheets", desc: "飞书电子表格：创建表格、读写数据、导出表格", version: "1.1.0" },
+                    { name: "lark-skill-maker", desc: "创建 lark-cli 的自定义 Skill", version: "1.0.0" },
+                    { name: "lark-slides", desc: "飞书幻灯片：创建和编辑幻灯片", version: "1.0.0" },
+                    { name: "lark-task", desc: "飞书任务：管理任务、清单、分配协作成员", version: "1.0.0" },
+                    { name: "lark-vc", desc: "飞书视频会议：查询会议记录、获取会议纪要产物", version: "1.0.0" },
+                    { name: "lark-whiteboard", desc: "飞书画板：查询和编辑画板，导出预览图片", version: "1.0.0" },
+                    { name: "lark-wiki", desc: "飞书知识库：管理知识空间、空间成员和文档节点", version: "1.0.0" },
+                    { name: "lark-workflow-meeting-summary", desc: "会议纪要整理工作流：汇总会议纪要生成结构化报告", version: "1.0.0" },
+                    { name: "lark-workflow-standup-report", desc: "日程待办摘要：生成日程与未完成任务摘要", version: "1.0.0" }
+                ]
+            },
+            "产品设计": {
+                icon: "🎨",
+                items: [
+                    { name: "general-productivity", desc: "代码审查：基于最佳实践提供全面的代码审查反馈", version: "-" },
+                    { name: "frontend-design", desc: "前端界面设计：创建独特、生产级的前端界面", version: "-" },
+                    { name: "canvas-design", desc: "视觉艺术设计：使用设计理念创建美观的视觉艺术", version: "-" },
+                    { name: "doc-coauthoring", desc: "文档协作：引导用户完成结构化的文档协作工作流", version: "-" },
+                    { name: "claude-md-management", desc: "CLAUDE.md 管理：审计、质量评估和针对性改进", version: "-" }
+                ]
+            },
+            "开发工具": {
+                icon: "🔧",
+                items: [
+                    { name: "github", desc: "GitHub 交互：使用 gh CLI 管理 issues、PRs、CI 等", version: "-" },
+                    { name: "playwright-cli", desc: "Web 应用测试：使用 Playwright 交互和测试本地 Web 应用", version: "-" },
+                    { name: "building-native-ui", desc: "原生 UI 构建：构建原生界面组件", version: "-" },
+                    { name: "find-skills", desc: "技能搜索：搜索和发现可用的 Claude Code Skills", version: "-" },
+                    { name: "self-improving-agent", desc: "自改进代理：捕获学习、错误和修正实现持续改进", version: "-" }
+                ]
+            },
+            "AI媒体": {
+                icon: "✨",
+                items: [
+                    { name: "minimax-docx", desc: "生成 Word 文档：创建专业文档，支持学术/商业样式", version: "1.0.0" },
+                    { name: "minimax-pdf", desc: "生成 PDF：创建高质量 PDF 文档和报告", version: "-" },
+                    { name: "minimax-xlsx", desc: "生成 Excel：创建和分析电子表格、财务模型", version: "-" },
+                    { name: "pptx-generator", desc: "生成 PPT：使用 PptxGenJS 创建演示文稿", version: "-" },
+                    { name: "anthropic-algorithmic-art", desc: "算法艺术：使用 p5.js 创建生成艺术", version: "-" },
+                    { name: "805bfa87-...", desc: "主题工厂：为幻灯片、文档、报告等应用主题", version: "-" }
+                ]
+            },
+            "AI思维模型": {
+                icon: "🧠",
+                items: [
+                    { name: "nuwa-skill", desc: "女娲造人：技能蒸馏框架，用于创建人物思维模型", version: "-" }
+                ]
+            },
+            "其他": {
+                icon: "📚",
+                items: [
+                    { name: "systematic-debugging", desc: "系统调试：使用假设驱动的调查、日志分析和二分法隔离缺陷", version: "-" },
+                    { name: "skills-org-webapp-testing", desc: "Web 测试：使用 Playwright 验证前端功能、调试 UI", version: "-" },
+                    { name: "web-artifacts-builder", desc: "Web 组件构建：创建复杂的 React/HTML 组件", version: "-" }
+                ]
+            }
+        };
+
+        let currentFilter = 'all';
+        let searchTerm = '';
+
+        function renderSkills() {
+            const container = document.getElementById('skillsContainer');
+            container.innerHTML = '';
+            let totalCount = 0;
+
+            for (const [category, data] of Object.entries(skills)) {
+                if (currentFilter !== 'all' && category !== currentFilter) continue;
+
+                const filteredItems = data.items.filter(item =>
+                    item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    item.desc.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+
+                if (filteredItems.length === 0 && searchTerm) continue;
+                totalCount += filteredItems.length;
+
+                const section = document.createElement('div');
+                section.className = 'category-section';
+                section.innerHTML = `
+                    <div class="category-header">
+                        <div class="category-icon">${data.icon}</div>
+                        <div class="category-title">${category}</div>
+                        <div class="category-count">${filteredItems.length} 个</div>
+                    </div>
+                    <div class="skill-grid">
+                        ${filteredItems.map(item => `
+                            <div class="skill-card" onclick="openModal('${category}', '${item.name}')">
+                                <div class="skill-name">${item.name}</div>
+                                <div class="skill-desc">${item.desc}</div>
+                                <div class="skill-tags">
+                                    ${item.version ? `<span class="skill-tag">v${item.version}</span>` : ''}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(section);
+            }
+
+            document.getElementById('totalCount').textContent = totalCount;
+        }
+
+        function openModal(category, skillName) {
+            const data = skills[category].items.find(i => i.name === skillName);
+            if (!data) return;
+
+            document.getElementById('modalTitle').textContent = data.name;
+            document.getElementById('modalCategory').textContent = category;
+            document.getElementById('modalBody').innerHTML = `
+                <div class="modal-section">
+                    <h3>技能描述</h3>
+                    <div class="skill-full-desc">${data.desc}</div>
+                </div>
+                <div class="modal-section">
+                    <h3>元信息</h3>
+                    <div class="skill-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">分类</div>
+                            <div class="meta-value">${category}</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">版本</div>
+                            <div class="meta-value">${data.version || '-'}</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">存储路径</div>
+                            <div class="meta-value" style="font-size: 0.8rem; word-break: break-all;">skills-repo/${category}/${data.name}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            searchTerm = e.target.value;
+            renderSkills();
+        });
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                renderSkills();
+            });
+        });
+
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) closeModal();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        renderSkills();
+    </script>
+</body>
+</html>
